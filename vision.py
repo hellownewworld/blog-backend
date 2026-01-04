@@ -16,25 +16,24 @@ def encode_image(file: UploadFile) -> str:
 
 
 def generate_blog(prompt: str, photos: List[UploadFile]) -> str:
-    input_content = [
-        {
-            "role": "user",
-            "content": [
-                {"type": "input_text", "text": prompt},
-                *[
-                    {
-                        "type": "input_image",
-                        "image_base64": encode_image(photo),
-                    }
-                    for photo in photos
-                ],
-            ],
-        }
-    ]
+    content = [{"type": "input_text", "text": prompt}]
+
+    for photo in photos:
+        content.append(
+            {
+                "type": "input_image",
+                "image_url": f"data:image/jpeg;base64,{encode_image(photo)}",
+            }
+        )
 
     response = client.responses.create(
         model="gpt-4.1-mini",
-        input=input_content,
+        input=[
+            {
+                "role": "user",
+                "content": content,
+            }
+        ],
         max_output_tokens=900,
     )
 
