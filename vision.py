@@ -19,10 +19,14 @@ def generate_blog(prompt: str, photos: List[UploadFile]) -> str:
     content = [{"type": "input_text", "text": prompt}]
 
     for photo in photos:
+        mime_type = photo.content_type  # ⭐ 핵심
+        if mime_type not in ["image/jpeg", "image/png", "image/webp", "image/gif"]:
+            continue  # 혹시 모를 비이미지 방어
+
         content.append(
             {
                 "type": "input_image",
-                "image_url": f"data:image/jpeg;base64,{encode_image(photo)}",
+                "image_url": f"data:{mime_type};base64,{encode_image(photo)}",
             }
         )
 
