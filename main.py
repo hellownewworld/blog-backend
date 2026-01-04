@@ -53,3 +53,7 @@ async def generate(
             "hashtags": hashtags,
         }
     )
+    
+@app.get("/cors-test")
+def cors_test():
+    return {"ok": True}
