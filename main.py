@@ -26,33 +26,43 @@ def parse_hashtags(text: str) -> list[str]:
     return text.split("해시태그:", 1)[1].strip().split()
 
 
+# @app.post("/blog/generate")
+# async def generate(
+#     targetKeyword: str = Form(...),
+#     photos: Optional[List[UploadFile]] = File(None),
+# ):
+#     photos = (photos or [])[:10]
+
+#     prompt = build_prompt(targetKeyword)
+#     blog_text = generate_blog(prompt, photos)
+
+#     title = ""
+#     body = blog_text
+
+#     if "제목:" in blog_text:
+#         title_part, rest = blog_text.split("제목:", 1)
+#         title_line, body = rest.split("본문:", 1)
+#         title = title_line.strip()
+
+#     hashtags = parse_hashtags(body)
+
+#     return JSONResponse(
+#         {
+#             "title": title,
+#             "content": body.strip(),
+#             "hashtags": hashtags,
+#         }
+#     )
 @app.post("/blog/generate")
 async def generate(
     targetKeyword: str = Form(...),
     photos: Optional[List[UploadFile]] = File(None),
 ):
-    photos = (photos or [])[:10]
-
-    prompt = build_prompt(targetKeyword)
-    blog_text = generate_blog(prompt, photos)
-
-    title = ""
-    body = blog_text
-
-    if "제목:" in blog_text:
-        title_part, rest = blog_text.split("제목:", 1)
-        title_line, body = rest.split("본문:", 1)
-        title = title_line.strip()
-
-    hashtags = parse_hashtags(body)
-
-    return JSONResponse(
-        {
-            "title": title,
-            "content": body.strip(),
-            "hashtags": hashtags,
-        }
-    )
+    return {
+        "title": "테스트 제목",
+        "content": "테스트 본문입니다.\n여러 줄도 정상입니다.",
+        "hashtags": ["#테스트", "#CORS", "#Render", "#FastAPI", "#OK"]
+    }
     
 @app.get("/cors-test")
 def cors_test():
