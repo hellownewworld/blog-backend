@@ -1,14 +1,14 @@
 import base64
-from openai import OpenAI
+import os
 from typing import List
 from fastapi import UploadFile
-import os
+from openai import OpenAI
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 
 def encode_image(file: UploadFile) -> str:
     file.file.seek(0)
@@ -16,27 +16,26 @@ def encode_image(file: UploadFile) -> str:
 
 
 def generate_blog(prompt: str, photos: List[UploadFile]) -> str:
-    content = [{"type": "text", "text": prompt}]
+    input_content = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "input_text", "text": prompt},
+                *[
+                    {
+                        "type": "input_image",
+                        "image_base64": encode_image(photo),
+                    }
+                    for photo in photos
+                ],
+            ],
+        }
+    ]
 
-    for photo in photos:
-        content.append(
-            {
-                {
-                "type": "input_image",
-                "image_base64": "..."
-                }
-            }
-        )
-
-    response = client.chat.completions.create(
+    response = client.responses.create(
         model="gpt-4.1-mini",
-        messages=[
-            {
-                "role": "user",
-                "content": content,
-            }
-        ],
-        max_tokens=900,
+        input=input_content,
+        max_output_tokens=900,
     )
 
     return response.output_text
