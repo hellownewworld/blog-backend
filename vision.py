@@ -70,13 +70,12 @@ def generate_blog(prompt: str, photos: List[UploadFile]) -> str:
             continue
 
         content.append(
-            {
-                "type": "input_image",
-                "image_url": {
-                    "url": f"data:{mime_type};base64,{to_base64(image_bytes)}"
-                }
-            }
-        )
+        {
+            "type": "input_image",
+            "image_url": f"data:{mime_type};base64,{to_base64(image_bytes)}"
+        }
+    )
+
 
     response = client.responses.create(
         model="gpt-4.1-mini",
